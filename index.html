@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Гистограмма</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
+</head>
+<body>
+	<h1>Динамическая гистограмма</h1>
+	<script src="bar.js"></script>
+	<script>
+		var chart = createChart(	[100,20,150,40,70], 
+							500, 
+							300, 
+							'#265f26');
+		document.body.appendChild(chart);
+	</script>
+</body>
+</html>
