@@ -26,58 +26,40 @@
 		}
 
 		function textListener(e){
-			var oldValue = e.target.textContent;
-			var newValue = prompt("Хотите изменить значение?", e.target.textContent);
+			var arrRect = document.getElementsByTagName('rect'),
+			    arrText = document.getElementsByTagName('text');
+
+			var oldValue = e.target.textContent,
+				newValue = prompt("Хотите изменить значение?", e.target.textContent);
+				item = Number(e.target.getAttribute('id').replace(/\D+/g,""));
 
 			//check for input
 			if (!newValue || !~newValue.search(/\d+/g)) return;
 			newValue = newValue.replace(/\D+/g,"");
-
 			e.target.textContent = newValue;
 
-			var item = Number(e.target.getAttribute('id').replace(/\D+/g,""));
 			//save to array
 			elements[item] = newValue;
 
 			//is it element with max value?
 			isMax = maxI == item;
-			if (isMax && newValue < oldValue) {
-				var arrRect = document.getElementsByTagName('rect'),
-				    arrText = document.getElementsByTagName('text');
+			if (isMax && +newValue < +oldValue) {
 				maxI = findMax();
 				max = elements[maxI]; 
 				scale = height/max;
-
-				for (var i = 0; i < elements.length; i++) {
-					draw(i, arrRect[i], arrText[i]);
-				}
 			}
-
-			console.log('maxI = ' + maxI + ', current item = ' + item);
-			console.log('max = ' + max + ', newValue = ' + newValue);
 
 			//if new value > max
 			if (+newValue > +max) {
-				var arrRect = document.getElementsByTagName('rect'),
-				    arrText = document.getElementsByTagName('text');
-
 				maxI = item;
 				max = newValue; 
 				scale = height/max;
-
-				//console.log("max-value - " + max);
-				//console.log(newValue == max);
-
-				for (var i = 0; i < elements.length; i++) {
-					draw(i, arrRect[i], arrText[i]);
-				}
 			}
 
-			else {
-				e.target.previousSibling.setAttribute('height', newValue * scale + 'px');
-				e.target.previousSibling.setAttribute('y', height - newValue * scale + 'px');
+			for (var i = 0; i < elements.length; i++) {
+				draw(i, arrRect[i], arrText[i]);
 			}
-		};
+		}
 
 
 		function findMax(){
@@ -94,15 +76,26 @@
 		}
 
 		function draw(i, rect, text) {
+			var textPos = 25,
+				textColor = '#f3f3f3';
 				rect.setAttribute('width', width - 4 + 'px');
 				rect.setAttribute('height', elements[i] * scale + 'px');
 				rect.setAttribute('fill', color);
-			    rect.setAttribute('y', height - elements[i] * scale);
-			    rect.setAttribute('x', width * i );
+			    rect.setAttribute('y', height - elements[i] * scale + 'px');
+			    rect.setAttribute('x', width * i + 'px');
+			    console.log('-------------------------')
+			    console.log('max = ', max);
+			    console.log(+elements[i] < +max/10);
+			    if (+elements[i] < +max/9){ 
+			    	textPos = -15; 
+			    	textColor = '#5f5f5f'; 
+			    }
+			    
 
 			    text.setAttribute('id', 'text-' + i)
-			    text.setAttribute('y', height - 10 + 'px');
+			    text.setAttribute('y', height - elements[i] * scale + textPos + 'px');
 			    text.setAttribute('x', width * i + width/2.1 + 'px' );
+				text.setAttribute('fill', textColor);
 			    text.setAttribute('text-anchor', 'middle' );
 			    text.innerHTML = elements[i];
 		}
@@ -113,9 +106,7 @@
 
 
 
-
-
-
+//first try to div implementation
 	// function createDIVChart(elements, width, height, color) {
 	// 		var chart = document.createElement('div');
 
