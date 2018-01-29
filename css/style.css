@@ -8,3 +8,17 @@ body {
 	text-align: center;
 	padding: 50px;
 }
+
+rect {
+	transition: .3s;
+	cursor: pointer;
+}
+
+rect:hover {
+	fill: red !important;
+}
+
+text {
+	fill: #fff;
+	cursor: pointer;
+}
