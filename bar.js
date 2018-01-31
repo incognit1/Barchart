@@ -1,36 +1,50 @@
-function createSVGChart(elements, width, height, color) {
-  var chart = document.createElementNS("http://www.w3.org/2000/svg", "svg"),
-    isMax;
+function createSVGChart(elements, width, height, color, names) {
 
+  var chart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   chart.setAttribute('id', 'chartbar');
   chart.style.width = width + 'px';
   chart.style.height = height + 'px';
   chart.style.margin = '20px auto';
 
-  var maxI = findMax();
-  var max = elements[maxI];
-
-  var scale = height / max,
+  var isMax,
+      maxLength = Number.NEGATIVE_INFINITY,
+      maxI = findMax(),
+      max = elements[maxI],
+      scale = height / max,
       width = Math.floor(width / elements.length);
+
+
+  for (var i = 0; i < names.length; i++) {
+    if (maxLength < names[i].length) {
+      maxLength = names[i].length;
+    }
+  }
+
+  chart.style.paddingBottom = maxLength * 10 + 'px';
 
   //creation of rect elements
   for (var i = 0; i < elements.length; i++) {
     var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect"),
-      	text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      	textVal = document.createElementNS("http://www.w3.org/2000/svg", "text"),
+      	textNames = document.createElementNS("http://www.w3.org/2000/svg", "text");
 
-    draw(i, rect, text);
-    text.onclick = textListener;
+    draw(i, rect, textVal, textNames);
+    textVal.onclick = textListener;
 
     chart.appendChild(rect);
-    chart.appendChild(text);
+    chart.appendChild(textVal);
+    chart.appendChild(textNames);
   }
 
+
+  //listener for click on value
   function textListener(e) {
     var arrRect = document.getElementsByTagName('rect'),
-      	arrText = document.getElementsByTagName('text');
+      	arrTextVal = document.querySelectorAll('text[id^=val]');
+      	arrTextNames = document.querySelectorAll('text[id^=name]');
 
     var oldValue = e.target.textContent,
-      newValue = prompt("Хотите изменить значение?", e.target.textContent);
+        newValue = prompt("Хотите изменить значение?", e.target.textContent);
     item = Number(e.target.getAttribute('id').replace(/\D+/g, ""));
 
     //check for input
@@ -57,11 +71,12 @@ function createSVGChart(elements, width, height, color) {
     }
 
     for (var i = 0; i < elements.length; i++) {
-      draw(i, arrRect[i], arrText[i]);
+      draw(i, arrRect[i], arrTextVal[i], arrTextNames[i]);
     }
   }
 
 
+  //finding the maximum value of chartbar
   function findMax() {
     var max = Number.NEGATIVE_INFINITY,
       n;
@@ -75,7 +90,8 @@ function createSVGChart(elements, width, height, color) {
     return n;
   }
 
-  function draw(i, rect, text) {
+  //rendering of chartbar
+  function draw(i, rect, textVal, textNames) {
     var textPos = 25,
       textColor = '#f3f3f3';
     rect.setAttribute('width', width - 4 + 'px');
@@ -83,21 +99,33 @@ function createSVGChart(elements, width, height, color) {
     rect.setAttribute('fill', color);
     rect.setAttribute('y', height - elements[i] * scale + 'px');
     rect.setAttribute('x', width * i + 'px');
-    console.log('-------------------------')
-    console.log('max = ', max);
-    console.log(+elements[i] < +max / 10);
+
     if (+elements[i] < +max / 9) {
       textPos = -15;
       textColor = '#5f5f5f';
     }
 
+    textVal.setAttribute('id', 'val-' + i)
+    textVal.setAttribute('y', height - elements[i] * scale + textPos + 'px');
+    textVal.setAttribute('x', width * i + width / 2.1 + 'px');
+    textVal.setAttribute('fill', textColor);
+    textVal.innerHTML = elements[i];
 
-    text.setAttribute('id', 'text-' + i)
-    text.setAttribute('y', height - elements[i] * scale + textPos + 'px');
-    text.setAttribute('x', width * i + width / 2.1 + 'px');
-    text.setAttribute('fill', textColor);
-    text.setAttribute('text-anchor', 'middle');
-    text.innerHTML = elements[i];
+    //check for length of title
+    if (elements[i].length > width/10) {
+      textVal.setAttribute('writing-mode', 'tb');
+      textVal.setAttribute('text-anchor', '');
+    }
+
+    else {
+      textVal.setAttribute('writing-mode', '');
+      textVal.setAttribute('text-anchor', 'middle');
+    }
+
+    textNames.setAttribute('id', 'name-' + i)
+    textNames.setAttribute('y', height + 10 + 'px');
+    textNames.setAttribute('x', width * i + width / 2.1 + 'px');
+    textNames.innerHTML = names[i];
   }
 
   return chart;

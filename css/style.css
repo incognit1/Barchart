@@ -10,15 +10,30 @@ body {
 }
 
 rect {
-	transition: .3s;
+	transition: .8s;
 	color: black;
 }
 
 rect:hover {
-	fill: red !important;
+  fill: #4a5a4a !important;
 }
 
 text {
 	cursor: pointer;
 	transition: .4s;
+	text-shadow: 0px 0px 0px transparent !important;
+}
+
+text[id^=name] {
+	fill: #969191;
+  writing-mode: tb;
+	font-size: 18px;
+}
+
+rect:hover + text[id^=val] {
+	text-shadow: 0px 0px 35px #fff !important;
+}
+
+text[id^=val]:hover {
+	text-shadow: 0px 0px 35px #fff !important;
 }

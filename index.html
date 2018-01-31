@@ -8,13 +8,14 @@
 	<script src="bar.js"></script>
 </head>
 <body>
-	<h1>Динамическая гистограмма</h1>
-	<p>Для изменения значения нажмите на само значение</p>
+	<h1>Dynamic bar chart</h1>
+	<p>Click on the value to change</p>
 	<script>
-		var chartSVG = createSVGChart(	[100,30,150,40,70,5],
+		var chartSVG = createSVGChart([100,30,150,40,70,5,120],
+							400,
 							300,
-							300,
-							'#265f26');
+							'#265f26',
+							['iOS','Android','Windows Phone', 'Blackbarry', 'Symbian', 'Windows Mobile', 'Bada OS']);
 		document.body.appendChild(chartSVG);
 	</script>
 </body>
